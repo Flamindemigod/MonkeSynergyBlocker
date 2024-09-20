@@ -64,11 +64,11 @@ function r.buildMenu()
     LAM:RegisterAddonPanel(r.name .. "GeneralOptions", panelData)
 
     local generalOptions = {
-        [1] = {
+        {
             type = "description",
             text = "Custom Synergy blocker that used to only blocks synergies based on Resources, now it does more"
         },
-        [2] = {
+        {
             type = "submenu",
             name = "|c00ffffGeneral|r",
             controls = {
@@ -156,7 +156,7 @@ function r.buildMenu()
                 }
             }
         },
-        [3] = {type = "submenu", name = "|c00ffffSynergies|r", controls = Syn}
+        {type = "submenu", name = "|c00ffffSynergies|r", controls = Syn}
     }
 
     LAM:RegisterOptionControls(r.name .. "GeneralOptions", generalOptions)

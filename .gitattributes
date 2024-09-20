@@ -1,2 +1,3 @@
 .git* export-ignore
 .lua-format export-ignore
+makefile export-ignore

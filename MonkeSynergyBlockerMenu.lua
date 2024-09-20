@@ -101,6 +101,17 @@ function r.buildMenu()
                     width = "half"
                 }, {
                     type = "checkbox",
+                    name = "Hide Synergy Key",
+                    getFunc = function()
+                        return r.savedVars.synCustomization.hideKey
+                    end,
+                    setFunc = function(var)
+                        r.savedVars.synCustomization.hideKey = var
+                    end,
+                    default = r.defaults.synCustomization.hideKey,
+                    width = "half"
+                }, {
+                    type = "checkbox",
                     name = "Hide Synergy Text",
                     getFunc = function()
                         return r.savedVars.synCustomization.hideText

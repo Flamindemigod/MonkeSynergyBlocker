@@ -69,6 +69,7 @@ r.defaults = {
     ["synCustomization"] = {
         ["enabled"] = true,
         ["iconScale"] = 1,
+        ["hideKey"] = false,
         ["hideText"] = false,
         ["textFont"] = "Univers 67",
         ["textFontSize"] = 24
@@ -338,6 +339,7 @@ function GetSynCustomization(synergyName, prompt)
     local scale = 1;
     local face = r.savedVars.synCustomization.textFont
     local size = r.savedVars.synCustomization.textFontSize
+    local hideKey = r.savedVars.synCustomization.hideKey
     local fontCustom = "ZoInteractionPrompt"
     if prompt == "" then prompt = zo_strformat(SI_USE_SYNERGY, synergyName) end
     if r.savedVars.synCustomization.enabled then
@@ -345,7 +347,7 @@ function GetSynCustomization(synergyName, prompt)
         fontCustom = face .. "|" .. size .. "|" .. "soft-shadow-thick"
         if r.savedVars.synCustomization.hideText then prompt = "" end
     end
-    return scale, prompt, fontCustom
+    return scale, hideKey, prompt, fontCustom
 end
 
 function r.blockSynergies()
@@ -353,12 +355,17 @@ function r.blockSynergies()
         local hasSynergy, synergyName, iconFilename, prompt =
             GetCurrentSynergyInfo()
         local blocked = shouldSynergyBeBlocked(synergyName, iconFilename)
-        local iconScale, promptCustom, textFont =
+        local iconScale, hideKey, promptCustom, textFont =
             GetSynCustomization(synergyName, prompt)
         if hasSynergy and not blocked then
             if self.lastSynergyName ~= synergyName then
                 PlaySound(SOUNDS.ABILITY_SYNERGY_READY)
                 self.lastSynergyName = synergyName
+            end
+            if hideKey then
+                self.key:SetHidden(true)
+            else
+                self.key:SetHidden(false)
             end
             self.action:SetText(promptCustom)
             self.action:SetFont(textFont)

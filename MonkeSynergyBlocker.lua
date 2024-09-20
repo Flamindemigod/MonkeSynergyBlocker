@@ -37,6 +37,9 @@ local TYPE_GATE = iota()
 -- necromancer
 local TYPE_GRAVE = iota()
 local TYPE_TOTEM = iota()
+-- Arcanist
+
+local TYPE_RUNEBREAK = iota()
 -- werewolf
 local TYPE_FRENZY = iota()
 
@@ -261,6 +264,9 @@ r.defaults = {
         },
         -- TODO: Add Arcanist Synergies
         -- RuneBreak
+        [TYPE_RUNEBREAK] = {
+            types = {[191078] = {blocked = r.blockType.RESOURCE_BLOCKED}}
+        },
         -- Portal
         -- Companion
         -- Crimson Funnel
@@ -280,6 +286,7 @@ r.divider = {
     [TYPE_SHARD] = true,
     [TYPE_SEED] = true,
     [TYPE_GRAVE] = true,
+    [TYPE_RUNEBREAK] = true,
     [TYPE_FRENZY] = true,
     [TYPE_CRIMSON_FUNNEL] = true
 }

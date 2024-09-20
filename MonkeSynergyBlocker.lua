@@ -71,7 +71,7 @@ r.defaults = {
         ["iconScale"] = 1,
         ["hideText"] = false,
         ["textFont"] = "Consolas",
-        ["textFontSize"] = 22
+        ["textFontSize"] = 24
     },
     ["magBlock"] = false,
     ["stamBlock"] = false,

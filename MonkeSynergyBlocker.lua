@@ -377,44 +377,6 @@ function r.blockSynergies()
             self.lastSynergyName = nil
         end
         return true
-        -- if r.savedVars.enabled then
-        --     if not ((IsPlayerInAvAWorld() or IsActiveWorldBattleground()) and
-        --         r.savedVars.blockInPvP) then
-        --         local name, icon = GetSynergyInfo()
-        --         if name and icon then
-        --             local link = ZO_LinkHandler_CreateLink(zo_strformat(
-        --                                                        "<<C:1>>", name),
-        --                                                    nil,
-        --                                                    "synergydisplay",
-        --                                                    name, icon);
-        --             r.eprintln("|cf05a4f" .. link .. "|r");
-        --             local t = r.invMapping[icon]
-        --             if not t then
-        --                 if not r.savedVars.missingIds[name] then
-        --                     r.savedVars.missingIds[name] = true;
-        --                     r.eprintln("Cannot block " .. name)
-        --                 end
-        --                 return false
-        --             end
-        --             local blockInfo = r.savedVars.synids[t.key].types[t.id]
-        --                                   .blocked
-        --             if blockInfo == r.blockType.PERMA_BLOCKED then
-        --                 r.eprintln("Perma Blocking '" .. name .. "'")
-        --                 SHARED_INFORMATION_AREA:SetHidden(self, true)
-        --                 return true
-        --             elseif blockInfo == r.blockType.RESOURCE_BLOCKED then
-        --                 if (r.savedVars.magBlock and r.mag >=
-        --                     r.savedVars.magThreshold) or
-        --                     (r.savedVars.stamBlock and r.stam >=
-        --                         r.savedVars.stamThreshold) then
-        --                     r.eprintln("Resource Blocking '" .. name .. "'")
-        --                     SHARED_INFORMATION_AREA:SetHidden(self, true)
-        --                     return true
-        --                 end
-        --             end
-        --         end
-        --     end
-        -- end
     end)
 end
 

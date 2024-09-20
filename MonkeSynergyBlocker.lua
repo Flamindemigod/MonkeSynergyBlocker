@@ -68,6 +68,7 @@ r.variableVersion = 1
 r.defaults = {
     ["synCustomization"] = {
         ["enabled"] = true,
+        ["iconScale"] = 1,
         ["hideText"] = false,
         ["textFont"] = "Consolas",
         ["textFontSize"] = 22

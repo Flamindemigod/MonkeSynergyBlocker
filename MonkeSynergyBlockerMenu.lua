@@ -85,6 +85,21 @@ function r.buildMenu()
                     default = r.defaults.synCustomization.enabled,
                     width = "half"
                 }, {
+                    type = "slider",
+                    name = "Set Icon Scale",
+                    getFunc = function()
+                        return r.savedVars.synCustomization.iconScale
+                    end,
+                    setFunc = function(var)
+                        r.savedVars.synCustomization.iconScale = var
+                    end,
+                    min = 0,
+                    max = 5,
+                    step = 0.1,
+                    decimals = 1,
+                    default = r.defaults.synCustomization.iconScale,
+                    width = "half"
+                }, {
                     type = "checkbox",
                     name = "Hide Synergy Text",
                     getFunc = function()

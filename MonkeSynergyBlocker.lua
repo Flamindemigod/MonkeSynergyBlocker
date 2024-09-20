@@ -70,7 +70,7 @@ r.defaults = {
         ["enabled"] = true,
         ["iconScale"] = 1,
         ["hideText"] = false,
-        ["textFont"] = "Consolas",
+        ["textFont"] = "Univers 67",
         ["textFontSize"] = 24
     },
     ["magBlock"] = false,

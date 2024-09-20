@@ -4,37 +4,44 @@ local EM = GetEventManager()
 
 r.mag = 0
 r.stam = 0
-
+r.iota = 1
+local function iota()
+    r.iota = r.iota + 1
+    return r.iota
+end
 -- sets
-local TYPE_THORN = 1
-local TYPE_URSUS = 2
+local TYPE_THORN = iota()
+local TYPE_URSUS = iota()
 -- undaunted
-local TYPE_ALTAR = 3
-local TYPE_SPIDER = 4
-local TYPE_TAUNT = 5
-local TYPE_SHIELD = 6
-local TYPE_ORB = 7
+local TYPE_ALTAR = iota()
+local TYPE_SPIDER = iota()
+local TYPE_TAUNT = iota()
+local TYPE_SHIELD = iota()
+local TYPE_ORB = iota()
 -- dragonknight
-local TYPE_STANDARD = 8
-local TYPE_TALONS = 9
+local TYPE_STANDARD = iota()
+local TYPE_TALONS = iota()
 -- sorcerer
-local TYPE_ATRONACH = 10
-local TYPE_LIGHTNING = 11
+local TYPE_ATRONACH = iota()
+local TYPE_LIGHTNING = iota()
 -- nightblade
-local TYPE_DARKNESS = 12
-local TYPE_SOUL = 13
+local TYPE_DARKNESS = iota()
+local TYPE_SOUL = iota()
 -- templar
-local TYPE_SHARD = 14
-local TYPE_NOVA = 15
-local TYPE_RITUAL = 16
+local TYPE_SHARD = iota()
+local TYPE_NOVA = iota()
+local TYPE_RITUAL = iota()
 -- warden
-local TYPE_SEED = 17
-local TYPE_GATE = 18
+local TYPE_SEED = iota()
+local TYPE_GATE = iota()
 -- necromancer
-local TYPE_GRAVE = 19
-local TYPE_TOTEM = 20
+local TYPE_GRAVE = iota()
+local TYPE_TOTEM = iota()
 -- werewolf
-local TYPE_FRENZY = 21
+local TYPE_FRENZY = iota()
+
+-- Companion
+local TYPE_CRIMSON_FUNNEL = iota()
 
 r.blockType = {
     NOT_BLOCKED = 0,
@@ -53,6 +60,7 @@ r.defaults = {
     ["magThreshold"] = 50,
     ["stamThreshold"] = 50,
     ["blockInPvP"] = true,
+    ["missingIds"] = {},
     ["synids"] = {
         -- Sets
         -- - Lady Thorn
@@ -228,6 +236,15 @@ r.defaults = {
         [TYPE_FRENZY] = {
             types = {[58775] = {blocked = r.blockType.RESOURCE_BLOCKED}},
             name = "Werewolf"
+        },
+        -- TODO: Add Arcanist Synergies
+        -- RuneBreak
+        -- Portal
+        -- Companion
+        -- Crimson Funnel
+        [TYPE_CRIMSON_FUNNEL] = {
+            types = {[155521] = {blocked = r.blockType.NOT_BLOCKED}},
+            name = "Companion Altar"
         }
     }
 }
@@ -241,7 +258,8 @@ r.divider = {
     [TYPE_SHARD] = true,
     [TYPE_SEED] = true,
     [TYPE_GRAVE] = true,
-    [TYPE_FRENZY] = true
+    [TYPE_FRENZY] = true,
+    [TYPE_CRIMSON_FUNNEL] = true
 }
 
 r.synids = r.defaults.synids
@@ -267,7 +285,7 @@ function r.resourceTracker(e, _, _, powerType, powerValue, powerMax, _)
 end
 
 function r.blockSynergies()
-    ZO_PreHook(SYNERGY, 'OnSynergyAbilityChanged', function(self)
+    ZO_PostHook(SYNERGY, 'OnSynergyAbilityChanged', function(self)
         if r.savedVars.enabled then
             if not ((IsPlayerInAvAWorld() or IsActiveWorldBattleground()) and
                 r.savedVars.blockInPvP) then
@@ -280,6 +298,13 @@ function r.blockSynergies()
                                                            name, icon);
                     r.eprintln("|cf05a4f" .. link .. "|r");
                     local t = r.invMapping[icon]
+                    if not t then
+                        if not r.savedVars.missingIds[name] then
+                            r.savedVars.missingIds[name] = true;
+                            r.eprintln("Cannot block " .. name)
+                        end
+                        return false
+                    end
                     local blockInfo = r.savedVars.synids[t.key].types[t.id]
                                           .blocked
                     if blockInfo == r.blockType.PERMA_BLOCKED then
@@ -302,6 +327,15 @@ function r.blockSynergies()
     end)
 end
 
+function r.CombatEvent(_, result, isError, abilityName, abilityGraphic,
+                       abilityActionSlotType, sourceName, sourceType,
+                       targetName, targetType, hitValue, powerType, damageType,
+                       log, sourceUnitId, targetUnitId, abilityId)
+    if r.savedVars.missingIds[abilityName] == true then
+        r.savedVars.missingIds[abilityName] = {["id"] = abilityId};
+    end
+end
+
 SLASH_COMMANDS["/msb.debug"] = function()
     r.savedVars.debug = not r.savedVars.debug
 end
@@ -315,6 +349,9 @@ function r.init(_, addon)
     r.buildMenu()
     r.blockSynergies()
     EM:RegisterForEvent(r.name, EVENT_POWER_UPDATE, r.resourceTracker)
+    EM:RegisterForEvent(r.name .. "cbEvent", EVENT_COMBAT_EVENT, r.CombatEvent)
+    EM:AddFilterForEvent(r.name .. "cbEvent", EVENT_COMBAT_EVENT,
+                         REGISTER_FILTER_SOURCE_COMBAT_UNIT_TYPE, "player")
 end
 
 EM:RegisterForEvent(r.name, EVENT_ADD_ON_LOADED, r.init)

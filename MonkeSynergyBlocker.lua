@@ -303,47 +303,111 @@ function r.resourceTracker(e, _, _, powerType, powerValue, powerMax, _)
         r.stam = (powerValue / powerMax) * 100
     end
 end
-
-function r.blockSynergies()
-    ZO_PostHook(SYNERGY, 'OnSynergyAbilityChanged', function(self)
-        if r.savedVars.enabled then
-            if not ((IsPlayerInAvAWorld() or IsActiveWorldBattleground()) and
-                r.savedVars.blockInPvP) then
-                local name, icon = GetSynergyInfo()
-                if name and icon then
-                    local link = ZO_LinkHandler_CreateLink(zo_strformat(
-                                                               "<<C:1>>", name),
-                                                           nil,
-                                                           "synergydisplay",
-                                                           name, icon);
-                    r.eprintln("|cf05a4f" .. link .. "|r");
-                    local t = r.invMapping[icon]
-                    if not t then
-                        if not r.savedVars.missingIds[name] then
-                            r.savedVars.missingIds[name] = true;
-                            r.eprintln("Cannot block " .. name)
-                        end
-                        return false
+local function shouldSynergyBeBlocked(name, icon)
+    if r.savedVars.enabled then
+        if not ((IsPlayerInAvAWorld() or IsActiveWorldBattleground()) and
+            r.savedVars.blockInPvP) then
+            if name and icon then
+                local t = r.invMapping[icon]
+                if not t then
+                    if not r.savedVars.missingIds[name] then
+                        r.savedVars.missingIds[name] = true;
+                        r.eprintln("Cannot block " .. name)
                     end
-                    local blockInfo = r.savedVars.synids[t.key].types[t.id]
-                                          .blocked
-                    if blockInfo == r.blockType.PERMA_BLOCKED then
-                        r.eprintln("Perma Blocking '" .. name .. "'")
-                        SHARED_INFORMATION_AREA:SetHidden(self, true)
+                    return false
+                end
+                local blockInfo = r.savedVars.synids[t.key].types[t.id].blocked
+                if blockInfo == r.blockType.PERMA_BLOCKED then
+                    r.eprintln("Perma Blocking '" .. name .. "'")
+                    return true
+                elseif blockInfo == r.blockType.RESOURCE_BLOCKED then
+                    if (r.savedVars.magBlock and r.mag >=
+                        r.savedVars.magThreshold) or
+                        (r.savedVars.stamBlock and r.stam >=
+                            r.savedVars.stamThreshold) then
+                        r.eprintln("Resource Blocking '" .. name .. "'")
                         return true
-                    elseif blockInfo == r.blockType.RESOURCE_BLOCKED then
-                        if (r.savedVars.magBlock and r.mag >=
-                            r.savedVars.magThreshold) or
-                            (r.savedVars.stamBlock and r.stam >=
-                                r.savedVars.stamThreshold) then
-                            r.eprintln("Resource Blocking '" .. name .. "'")
-                            SHARED_INFORMATION_AREA:SetHidden(self, true)
-                            return true
-                        end
                     end
                 end
             end
         end
+    end
+end
+
+function GetSynCustomization(synergyName, prompt)
+    local scale = 1;
+    local face = r.savedVars.synCustomization.textFont
+    local size = r.savedVars.synCustomization.textFontSize
+    local fontCustom = "ZoInteractionPrompt"
+    if prompt == "" then prompt = zo_strformat(SI_USE_SYNERGY, synergyName) end
+    if r.savedVars.synCustomization.enabled then
+        scale = r.savedVars.synCustomization.iconScale or 1
+        fontCustom = face .. "|" .. size .. "|" .. "soft-shadow-thick"
+        if r.savedVars.synCustomization.hideText then prompt = "" end
+    end
+    return scale, prompt, fontCustom
+end
+
+function r.blockSynergies()
+    ZO_PostHook(SYNERGY, 'OnSynergyAbilityChanged', function(self)
+        local hasSynergy, synergyName, iconFilename, prompt =
+            GetCurrentSynergyInfo()
+        local blocked = shouldSynergyBeBlocked(synergyName, iconFilename)
+        local iconScale, promptCustom, textFont =
+            GetSynCustomization(synergyName, prompt)
+        if hasSynergy and not blocked then
+            if self.lastSynergyName ~= synergyName then
+                PlaySound(SOUNDS.ABILITY_SYNERGY_READY)
+                self.lastSynergyName = synergyName
+            end
+            self.action:SetText(promptCustom)
+            self.action:SetFont(textFont)
+            self.icon:SetTexture(iconFilename)
+            self.icon:SetScale(iconScale)
+            SHARED_INFORMATION_AREA:SetHidden(self, false)
+        else
+            SHARED_INFORMATION_AREA:SetHidden(self, true)
+            self.lastSynergyName = nil
+        end
+        return true
+        -- if r.savedVars.enabled then
+        --     if not ((IsPlayerInAvAWorld() or IsActiveWorldBattleground()) and
+        --         r.savedVars.blockInPvP) then
+        --         local name, icon = GetSynergyInfo()
+        --         if name and icon then
+        --             local link = ZO_LinkHandler_CreateLink(zo_strformat(
+        --                                                        "<<C:1>>", name),
+        --                                                    nil,
+        --                                                    "synergydisplay",
+        --                                                    name, icon);
+        --             r.eprintln("|cf05a4f" .. link .. "|r");
+        --             local t = r.invMapping[icon]
+        --             if not t then
+        --                 if not r.savedVars.missingIds[name] then
+        --                     r.savedVars.missingIds[name] = true;
+        --                     r.eprintln("Cannot block " .. name)
+        --                 end
+        --                 return false
+        --             end
+        --             local blockInfo = r.savedVars.synids[t.key].types[t.id]
+        --                                   .blocked
+        --             if blockInfo == r.blockType.PERMA_BLOCKED then
+        --                 r.eprintln("Perma Blocking '" .. name .. "'")
+        --                 SHARED_INFORMATION_AREA:SetHidden(self, true)
+        --                 return true
+        --             elseif blockInfo == r.blockType.RESOURCE_BLOCKED then
+        --                 if (r.savedVars.magBlock and r.mag >=
+        --                     r.savedVars.magThreshold) or
+        --                     (r.savedVars.stamBlock and r.stam >=
+        --                         r.savedVars.stamThreshold) then
+        --                     r.eprintln("Resource Blocking '" .. name .. "'")
+        --                     SHARED_INFORMATION_AREA:SetHidden(self, true)
+        --                     return true
+        --                 end
+        --             end
+        --         end
+        --     end
+        -- end
     end)
 end
 

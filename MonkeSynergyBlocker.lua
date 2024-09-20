@@ -43,6 +43,19 @@ local TYPE_FRENZY = iota()
 -- Companion
 local TYPE_CRIMSON_FUNNEL = iota()
 
+r.fonts = {
+    ["ProseAntique"] = "$(ANTIQUE_FONT)",
+    ["Consolas"] = "/EsoUI/Common/Fonts/consola.slug",
+    ["Futura Condensed"] = "$(GAMEPAD_MEDIUM_FONT)",
+    ["Futura Condensed Bold"] = "$(GAMEPAD_BOLD_FONT)",
+    ["Futura Condensed Light"] = "$(GAMEPAD_LIGHT_FONT)",
+    ["Skyrim Handwritten"] = "$(HANDWRITTEN_FONT)",
+    ["Trajan Pro"] = "$(STONE_TABLET_FONT)",
+    ["Univers 55"] = "$(CHAT_FONT)",
+    ["Univers 57"] = "$(MEDIUM_FONT)",
+    ["Univers 67"] = "$(BOLD_FONT)"
+};
+
 r.blockType = {
     NOT_BLOCKED = 0,
     RESOURCE_BLOCKED = 1,
@@ -53,6 +66,12 @@ r.name = "MonkeSynergyBlocker"
 r.version = "1.2.0"
 r.variableVersion = 1
 r.defaults = {
+    ["synCustomization"] = {
+        ["enabled"] = true,
+        ["hideText"] = false,
+        ["textFont"] = "Consolas",
+        ["textFontSize"] = 22
+    },
     ["magBlock"] = false,
     ["stamBlock"] = false,
     ["enabled"] = true,

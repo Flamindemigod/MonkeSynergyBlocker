@@ -1,4 +1,5 @@
 MonkeSynergyBlocker = MonkeSynergyBlocker or {}
+
 local r = MonkeSynergyBlocker
 
 local blockMapping = {
@@ -67,8 +68,69 @@ function r.buildMenu()
         {
             type = "description",
             text = "Custom Synergy blocker that used to only blocks synergies based on Resources, now it does more"
-        },
-        {
+        }, {
+            type = "submenu",
+            name = "|c00ffffSynergy Customization|r",
+            controls = {
+                {type = "description", text = "Customize how synergies look"},
+                {
+                    type = "checkbox",
+                    name = "Toggle Synergy Customization",
+                    getFunc = function()
+                        return r.savedVars.synCustomization.enabled
+                    end,
+                    setFunc = function(var)
+                        r.savedVars.synCustomization.enabled = var
+                    end,
+                    default = r.defaults.synCustomization.enabled,
+                    width = "half"
+                }, {
+                    type = "checkbox",
+                    name = "Hide Synergy Text",
+                    getFunc = function()
+                        return r.savedVars.synCustomization.hideText
+                    end,
+                    setFunc = function(var)
+                        r.savedVars.synCustomization.hideText = var
+                    end,
+                    default = r.defaults.synCustomization.hideText,
+                    width = "half"
+                }, {
+                    type = "dropdown",
+                    name = "Set Synergy Text Font",
+                    choices = (function()
+                        local keys = {}
+                        for k, _ in pairs(r.fonts) do
+                            table.insert(keys, k)
+                        end
+                        return keys
+                    end)(),
+                    getFunc = function()
+                        return r.savedVars.synCustomization.textFont
+                    end,
+                    setFunc = function(val)
+                        r.savedVars.synCustomization.textFont = val
+                    end,
+                    default = r.defaults.synCustomization.textFont,
+                    width = "half"
+                }, {
+                    type = "slider",
+                    name = "Set Font Size",
+                    getFunc = function()
+                        return r.savedVars.synCustomization.textFontSize
+                    end,
+                    setFunc = function(var)
+                        r.savedVars.synCustomization.textFontSize = var
+                    end,
+                    min = 0,
+                    max = 100,
+                    step = 1,
+                    decimals = 0,
+                    default = r.defaults.synCustomization.textFontSize,
+                    width = "half"
+                }
+            }
+        }, {
             type = "submenu",
             name = "|c00ffffGeneral|r",
             controls = {
@@ -155,8 +217,7 @@ function r.buildMenu()
                     width = "half"
                 }
             }
-        },
-        {type = "submenu", name = "|c00ffffSynergies|r", controls = Syn}
+        }, {type = "submenu", name = "|c00ffffSynergies|r", controls = Syn}
     }
 
     LAM:RegisterOptionControls(r.name .. "GeneralOptions", generalOptions)

@@ -68,6 +68,7 @@ r.variableVersion = 1
 r.defaults = {
     ["synCustomization"] = {
         ["enabled"] = true,
+        ["containerOffset"] = {["x"] = 0, ["y"] = 0},
         ["iconScale"] = 1,
         ["hideKey"] = false,
         ["hideText"] = false,
@@ -337,17 +338,22 @@ end
 
 function GetSynCustomization(synergyName, prompt)
     local scale = 1;
+    local enabled = r.savedVars.synCustomization.enabled
     local face = r.savedVars.synCustomization.textFont
     local size = r.savedVars.synCustomization.textFontSize
-    local hideKey = r.savedVars.synCustomization.hideKey
+    local hideKey = enabled and r.savedVars.synCustomization.hideKey or false
+    local offsetX =
+        enabled and r.savedVars.synCustomization.containerOffset.x or 0
+    local offsetY =
+        enabled and r.savedVars.synCustomization.containerOffset.y or 0
     local fontCustom = "ZoInteractionPrompt"
     if prompt == "" then prompt = zo_strformat(SI_USE_SYNERGY, synergyName) end
-    if r.savedVars.synCustomization.enabled then
+    if enabled then
         scale = r.savedVars.synCustomization.iconScale or 1
         fontCustom = face .. "|" .. size .. "|" .. "soft-shadow-thick"
         if r.savedVars.synCustomization.hideText then prompt = "" end
     end
-    return scale, hideKey, prompt, fontCustom
+    return enabled, scale, hideKey, prompt, fontCustom, offsetX, offsetY
 end
 
 function r.blockSynergies()
@@ -355,8 +361,8 @@ function r.blockSynergies()
         local hasSynergy, synergyName, iconFilename, prompt =
             GetCurrentSynergyInfo()
         local blocked = shouldSynergyBeBlocked(synergyName, iconFilename)
-        local iconScale, hideKey, promptCustom, textFont =
-            GetSynCustomization(synergyName, prompt)
+        local enabled, iconScale, hideKey, promptCustom, textFont, offsetX,
+              offsetY = GetSynCustomization(synergyName, prompt)
         if hasSynergy and not blocked then
             if self.lastSynergyName ~= synergyName then
                 PlaySound(SOUNDS.ABILITY_SYNERGY_READY)
@@ -371,6 +377,13 @@ function r.blockSynergies()
             self.action:SetFont(textFont)
             self.icon:SetTexture(iconFilename)
             self.icon:SetScale(iconScale)
+            if enabled then
+                self.container:ClearAnchors()
+                self.container:SetAnchor(CENTER, nil, CENTER, offsetX, offsetY)
+            else
+                self.container:SetAnchor(BOTTOM, nil, BOTTOM, 0,
+                                         ZO_COMMON_INFO_DEFAULT_KEYBOARD_BOTTOM_OFFSET_Y)
+            end
             SHARED_INFORMATION_AREA:SetHidden(self, false)
         else
             SHARED_INFORMATION_AREA:SetHidden(self, true)

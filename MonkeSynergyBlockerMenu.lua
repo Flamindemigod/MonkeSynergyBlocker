@@ -84,6 +84,36 @@ function r.buildMenu()
                     end,
                     default = r.defaults.synCustomization.enabled,
                     width = "half"
+                }, {type = "divider", width = "full"}, {
+                    type = "slider",
+                    name = "Set Synergy Offset X",
+                    getFunc = function()
+                        return r.savedVars.synCustomization.containerOffset.x
+                    end,
+                    setFunc = function(var)
+                        r.savedVars.synCustomization.containerOffset.x = var
+                    end,
+                    min = -1000,
+                    max = 1000,
+                    step = 1,
+                    decimals = 0,
+                    default = r.defaults.synCustomization.containerOffset.x,
+                    width = "half"
+                }, {
+                    type = "slider",
+                    name = "Set Synergy Offset Y",
+                    getFunc = function()
+                        return r.savedVars.synCustomization.containerOffset.y
+                    end,
+                    setFunc = function(var)
+                        r.savedVars.synCustomization.containerOffset.y = var
+                    end,
+                    min = -1000,
+                    max = 1000,
+                    step = 1,
+                    decimals = 0,
+                    default = r.defaults.synCustomization.containerOffset.y,
+                    width = "half"
                 }, {
                     type = "slider",
                     name = "Set Icon Scale",

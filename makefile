@@ -14,5 +14,5 @@ format:
 
 zip:
 	@echo "Exporting Addon"
-	git archive HEAD --prefix=PrecastBlocker/ --format=zip -o PrecastBlocker.zip
+	git archive HEAD --prefix=MonkeSynergyBlocker/ --format=zip -o MonkeSynergyBlocker.zip
 	@echo "Done."

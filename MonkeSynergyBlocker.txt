@@ -4,7 +4,7 @@
 ## APIVersion: 100035
 ## SavedVariables: MonkeSynergyBlockerVars
 ## DependsOn: LibAddonMenu-2.0
-## Version: 1.2.0
+## Version: 1.3.0
 
 MonkeSynergyBlocker.lua
 MonkeSynergyBlockerMenu.lua

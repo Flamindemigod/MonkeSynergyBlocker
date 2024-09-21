@@ -66,7 +66,7 @@ r.blockType = {
     PERMA_BLOCKED = 3
 }
 r.name = "MonkeSynergyBlocker"
-r.version = "1.2.0"
+r.version = "1.3.0"
 r.variableVersion = 1
 r.defaults = {
     ["synCustomization"] = {

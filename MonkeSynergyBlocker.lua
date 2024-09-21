@@ -363,6 +363,8 @@ function GetSynCustomization(synergyName, prompt)
     return enabled, scale, hideKey, prompt, fontCustom, offsetX, offsetY
 end
 
+r.runOnce = true
+
 function r.blockSynergies()
     ZO_PostHook(SYNERGY, 'OnSynergyAbilityChanged', function(self)
         local hasSynergy, synergyName, iconFilename, prompt =
@@ -375,22 +377,26 @@ function r.blockSynergies()
                 PlaySound(SOUNDS.ABILITY_SYNERGY_READY)
                 self.lastSynergyName = synergyName
             end
-            if hideKey then
-                self.key:SetHidden(true)
-            else
-                self.key:SetHidden(false)
+            if r.runOnce then
+                r.runOnce = false
+                if hideKey then
+                    self.key:SetHidden(true)
+                else
+                    self.key:SetHidden(false)
+                end
+                self.icon:SetScale(iconScale)
+                self.action:SetFont(textFont)
+                if enabled then
+                    self.container:ClearAnchors()
+                    self.container:SetAnchor(CENTER, nil, CENTER, offsetX,
+                                             offsetY)
+                else
+                    self.container:SetAnchor(BOTTOM, nil, BOTTOM, 0,
+                                             ZO_COMMON_INFO_DEFAULT_KEYBOARD_BOTTOM_OFFSET_Y)
+                end
             end
             self.action:SetText(promptCustom)
-            self.action:SetFont(textFont)
             self.icon:SetTexture(iconFilename)
-            self.icon:SetScale(iconScale)
-            if enabled then
-                self.container:ClearAnchors()
-                self.container:SetAnchor(CENTER, nil, CENTER, offsetX, offsetY)
-            else
-                self.container:SetAnchor(BOTTOM, nil, BOTTOM, 0,
-                                         ZO_COMMON_INFO_DEFAULT_KEYBOARD_BOTTOM_OFFSET_Y)
-            end
             SHARED_INFORMATION_AREA:SetHidden(self, false)
         else
             SHARED_INFORMATION_AREA:SetHidden(self, true)

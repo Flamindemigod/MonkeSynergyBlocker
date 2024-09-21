@@ -80,6 +80,7 @@ function r.buildMenu()
                         return r.savedVars.synCustomization.enabled
                     end,
                     setFunc = function(var)
+                        r.runOnce = true
                         r.savedVars.synCustomization.enabled = var
                     end,
                     default = r.defaults.synCustomization.enabled,
@@ -91,6 +92,7 @@ function r.buildMenu()
                         return r.savedVars.synCustomization.containerOffset.x
                     end,
                     setFunc = function(var)
+                        r.runOnce = true
                         r.savedVars.synCustomization.containerOffset.x = var
                     end,
                     min = -1000,
@@ -106,6 +108,7 @@ function r.buildMenu()
                         return r.savedVars.synCustomization.containerOffset.y
                     end,
                     setFunc = function(var)
+                        r.runOnce = true
                         r.savedVars.synCustomization.containerOffset.y = var
                     end,
                     min = -1000,
@@ -121,6 +124,7 @@ function r.buildMenu()
                         return r.savedVars.synCustomization.iconScale
                     end,
                     setFunc = function(var)
+                        r.runOnce = true
                         r.savedVars.synCustomization.iconScale = var
                     end,
                     min = 0,
@@ -136,6 +140,7 @@ function r.buildMenu()
                         return r.savedVars.synCustomization.hideKey
                     end,
                     setFunc = function(var)
+                        r.runOnce = true
                         r.savedVars.synCustomization.hideKey = var
                     end,
                     default = r.defaults.synCustomization.hideKey,
@@ -165,6 +170,7 @@ function r.buildMenu()
                         return r.savedVars.synCustomization.textFont
                     end,
                     setFunc = function(val)
+                        r.runOnce = true
                         r.savedVars.synCustomization.textFont = val
                     end,
                     default = r.defaults.synCustomization.textFont,
@@ -176,6 +182,7 @@ function r.buildMenu()
                         return r.savedVars.synCustomization.textFontSize
                     end,
                     setFunc = function(var)
+                        r.runOnce = true
                         r.savedVars.synCustomization.textFontSize = var
                     end,
                     min = 0,

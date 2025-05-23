@@ -276,7 +276,7 @@ r.defaults = {
     },
     ["missingIds"] = {},
     ["debug"] = false,
-    ["Characters"] = {};
+    ["Characters"] = {}
 }
 
 r.divider = {
@@ -333,10 +333,8 @@ local function shouldSynergyBeBlocked(name, icon)
                     r.eprintln("Perma Blocking '" .. name .. "'")
                     return true
                 elseif blockInfo == r.blockType.RESOURCE_BLOCKED then
-                    if (vars.magBlock and r.mag >=
-                        vars.magThreshold) or
-                        (vars.stamBlock and r.stam >=
-                            vars.stamThreshold) then
+                    if (vars.magBlock and r.mag >= vars.magThreshold) or
+                        (vars.stamBlock and r.stam >= vars.stamThreshold) then
                         r.eprintln("Resource Blocking '" .. name .. "'")
                         return true
                     end
@@ -426,10 +424,10 @@ function r.init(_, addon)
     if addon ~= r.name then return end
     EM:UnregisterForEvent(r.name .. "onLoad", EVENT_ADD_ON_LOADED)
     r.savedVars = ZO_SavedVars:NewAccountWide(r.name .. "Vars",
-                                                      r.variableVersion, r.name,
-                                                      r.defaults, GetWorldName(), nil);
+                                              r.variableVersion, r.name,
+                                              r.defaults, GetWorldName(), nil);
     r.charName = getUnitName("player");
-    if r.savedVars.Characters[r.charName] == nil then 
+    if r.savedVars.Characters[r.charName] == nil then
         r.savedVars.Characters[r.charName] = r.defaultCharacter;
     end
     r.buildMenu()

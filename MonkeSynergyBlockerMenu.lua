@@ -40,12 +40,10 @@ function r.buildMenu()
                 choices = choices,
                 name = tex .. a_v.name,
                 getFunc = function()
-                    return blockMapping[vars.synids[type].types[a_id]
-                               .blocked]
+                    return blockMapping[vars.synids[type].types[a_id].blocked]
                 end,
                 setFunc = function(val)
-                    vars.synids[type].types[a_id].blocked =
-                        invBlockMapping[val]
+                    vars.synids[type].types[a_id].blocked = invBlockMapping[val]
                 end,
                 default = r.defaultCharacter.synids[type].types[a_id].blocked
             }
@@ -204,9 +202,7 @@ function r.buildMenu()
                 }, {
                     type = "checkbox",
                     name = "Global Toggle",
-                    getFunc = function()
-                        return vars.enabled
-                    end,
+                    getFunc = function() return vars.enabled end,
                     setFunc = function(var)
                         vars.enabled = var
                     end,
@@ -226,9 +222,7 @@ function r.buildMenu()
                 }, {
                     type = "checkbox",
                     name = "Track Magicka",
-                    getFunc = function()
-                        return vars.magBlock
-                    end,
+                    getFunc = function() return vars.magBlock end,
                     setFunc = function(var)
                         vars.magBlock = var
                     end,

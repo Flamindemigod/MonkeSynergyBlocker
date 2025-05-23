@@ -66,26 +66,15 @@ r.blockType = {
     PERMA_BLOCKED = 3
 }
 r.name = "MonkeSynergyBlocker"
-r.version = "1.3.0"
-r.variableVersion = 1
-r.defaults = {
-    ["synCustomization"] = {
-        ["enabled"] = true,
-        ["containerOffset"] = {["x"] = 0, ["y"] = 0},
-        ["iconScale"] = 1,
-        ["hideKey"] = false,
-        ["hideText"] = false,
-        ["textFont"] = "Univers 67",
-        ["textFontSize"] = 24
-    },
+r.version = "1.4.0"
+r.variableVersion = 2
+r.defaultCharacter = {
     ["magBlock"] = false,
     ["stamBlock"] = false,
     ["enabled"] = true,
-    ["debug"] = false,
     ["magThreshold"] = 50,
     ["stamThreshold"] = 50,
     ["blockInPvP"] = true,
-    ["missingIds"] = {},
     ["synids"] = {
         -- Sets
         -- - Lady Thorn
@@ -263,7 +252,6 @@ r.defaults = {
             name = "Werewolf"
         },
         -- TODO: Add Arcanist Synergies
-        -- RuneBreak
         [TYPE_RUNEBREAK] = {
             types = {[191078] = {blocked = r.blockType.RESOURCE_BLOCKED}}
         },
@@ -275,6 +263,20 @@ r.defaults = {
             name = "Companion Altar"
         }
     }
+};
+r.defaults = {
+    ["synCustomization"] = {
+        ["enabled"] = true,
+        ["containerOffset"] = {["x"] = 0, ["y"] = 0},
+        ["iconScale"] = 1,
+        ["hideKey"] = false,
+        ["hideText"] = false,
+        ["textFont"] = "Univers 67",
+        ["textFontSize"] = 24
+    },
+    ["missingIds"] = {},
+    ["debug"] = false,
+    ["Characters"] = {};
 }
 
 r.divider = {
@@ -291,7 +293,7 @@ r.divider = {
     [TYPE_CRIMSON_FUNNEL] = true
 }
 
-r.synids = r.defaults.synids
+r.synids = r.defaultCharacter.synids
 r.invMapping = {}
 
 for id, v in pairs(r.synids) do
@@ -313,9 +315,10 @@ function r.resourceTracker(e, _, _, powerType, powerValue, powerMax, _)
     end
 end
 local function shouldSynergyBeBlocked(name, icon)
-    if r.savedVars.enabled then
+    vars = r.savedVars.Characters[r.charName];
+    if vars.enabled then
         if not ((IsPlayerInAvAWorld() or IsActiveWorldBattleground()) and
-            r.savedVars.blockInPvP) then
+            vars.blockInPvP) then
             if name and icon then
                 local t = r.invMapping[icon]
                 if not t then
@@ -325,15 +328,15 @@ local function shouldSynergyBeBlocked(name, icon)
                     end
                     return false
                 end
-                local blockInfo = r.savedVars.synids[t.key].types[t.id].blocked
+                local blockInfo = vars.synids[t.key].types[t.id].blocked
                 if blockInfo == r.blockType.PERMA_BLOCKED then
                     r.eprintln("Perma Blocking '" .. name .. "'")
                     return true
                 elseif blockInfo == r.blockType.RESOURCE_BLOCKED then
-                    if (r.savedVars.magBlock and r.mag >=
-                        r.savedVars.magThreshold) or
-                        (r.savedVars.stamBlock and r.stam >=
-                            r.savedVars.stamThreshold) then
+                    if (vars.magBlock and r.mag >=
+                        vars.magThreshold) or
+                        (vars.stamBlock and r.stam >=
+                            vars.stamThreshold) then
                         r.eprintln("Resource Blocking '" .. name .. "'")
                         return true
                     end
@@ -422,9 +425,13 @@ end
 function r.init(_, addon)
     if addon ~= r.name then return end
     EM:UnregisterForEvent(r.name .. "onLoad", EVENT_ADD_ON_LOADED)
-    r.savedVars = ZO_SavedVars:NewCharacterIdSettings(r.name .. "Vars",
+    r.savedVars = ZO_SavedVars:NewAccountWide(r.name .. "Vars",
                                                       r.variableVersion, r.name,
-                                                      r.defaults, GetWorldName())
+                                                      r.defaults, GetWorldName(), nil);
+    r.charName = getUnitName("player");
+    if r.savedVars.Characters[r.charName] == nil then 
+        r.savedVars.Characters[r.charName] = r.defaultCharacter;
+    end
     r.buildMenu()
     r.blockSynergies()
     EM:RegisterForEvent(r.name, EVENT_POWER_UPDATE, r.resourceTracker)

@@ -17,6 +17,7 @@ for key, value in pairs(blockMapping) do
 end
 
 function r.buildMenu()
+    vars = r.savedVars.Characters[r.charName];
     local LAM = LibAddonMenu2
     local Syn = {
         {
@@ -39,14 +40,14 @@ function r.buildMenu()
                 choices = choices,
                 name = tex .. a_v.name,
                 getFunc = function()
-                    return blockMapping[r.savedVars.synids[type].types[a_id]
+                    return blockMapping[vars.synids[type].types[a_id]
                                .blocked]
                 end,
                 setFunc = function(val)
-                    r.savedVars.synids[type].types[a_id].blocked =
+                    vars.synids[type].types[a_id].blocked =
                         invBlockMapping[val]
                 end,
-                default = r.defaults.synids[type].types[a_id].blocked
+                default = r.defaultCharacter.synids[type].types[a_id].blocked
             }
         end
     end
@@ -204,78 +205,78 @@ function r.buildMenu()
                     type = "checkbox",
                     name = "Global Toggle",
                     getFunc = function()
-                        return r.savedVars.enabled
+                        return vars.enabled
                     end,
                     setFunc = function(var)
-                        r.savedVars.enabled = var
+                        vars.enabled = var
                     end,
-                    default = r.defaults["enabled"],
+                    default = r.defaultCharacter["enabled"],
                     width = "half"
                 }, {
                     type = "checkbox",
                     name = "Disable in PvP",
                     getFunc = function()
-                        return r.savedVars.blockInPvP
+                        return vars.blockInPvP
                     end,
                     setFunc = function(var)
-                        r.savedVars.blockInPvP = var
+                        vars.blockInPvP = var
                     end,
-                    default = r.defaults["blockInPvP"],
+                    default = r.defaultCharacter["blockInPvP"],
                     width = "half"
                 }, {
                     type = "checkbox",
                     name = "Track Magicka",
                     getFunc = function()
-                        return r.savedVars.magBlock
+                        return vars.magBlock
                     end,
                     setFunc = function(var)
-                        r.savedVars.magBlock = var
+                        vars.magBlock = var
                     end,
-                    default = r.defaults["magBlock"],
+                    default = r.defaultCharacter["magBlock"],
                     width = "half"
                 }, {
                     type = "slider",
                     name = "Magicka Threshold",
                     getFunc = function()
-                        return r.savedVars.magThreshold
+                        return vars.magThreshold
                     end,
                     setFunc = function(val)
-                        r.savedVars.magThreshold = val
+                        vars.magThreshold = val
                     end,
                     min = 0,
                     max = 100,
                     step = 10,
-                    default = r.defaults["magThreshold"],
+                    default = r.defaultCharacter["magThreshold"],
                     disabled = function()
-                        return not r.savedVars.magBlock
+                        return not vars.magBlock
                     end,
                     width = "half"
                 }, {
                     type = "checkbox",
                     name = "Track Stamina",
                     getFunc = function()
-                        return r.savedVars.stamBlock
+                        return vars.stamBlock
                     end,
                     setFunc = function(var)
-                        r.savedVars.stamBlock = var
+                        vars.stamBlock = var
                     end,
-                    default = r.defaults["stamBlock"],
+                    default = r.defaultCharacter["stamBlock"],
                     width = "half"
                 }, {
                     type = "slider",
                     name = "Stamina Threshold",
                     getFunc = function()
-                        return r.savedVars.stamThreshold
+                        return vars.stamThreshold
                     end,
                     setFunc = function(val)
-                        r.savedVars.stamThreshold = val
+                        vars.stamThreshold = val
                     end,
                     min = 0,
                     max = 100,
                     step = 10,
                     default = r.defaults["stamThreshold"],
                     disabled = function()
-                        return not r.savedVars.stamBlock
+                        return not vars.stamBlock
                     end,
                     width = "half"
                 }
